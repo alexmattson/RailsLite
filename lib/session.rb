@@ -3,7 +3,7 @@ require 'json'
 class Session
 
   def initialize(req)
-    cookie = req.cookie["_rails_lite_app"]
+    cookie = req.cookies["_rails_lite_app"]
     @info = cookie ? JSON.parse(cookie) : {}
   end
 
@@ -15,8 +15,8 @@ class Session
     @info[key] = val
   end
 
-  # serialize the hash into json and save in a cookie
-  # add to the responses cookies
   def store_session(res)
+    cookie = { path: '/', value: @info.to_json}
+    res.set_cookie("_rails_lite_app", cookie)
   end
 end
