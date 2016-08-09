@@ -7,9 +7,10 @@ require_relative './session'
 class ControllerBase
   attr_reader :req, :res, :params
 
-  def initialize(req, res)
+  def initialize(req, res, route_params = {})
     @req, @res = req, res
     @already_built_response = false
+    @params = req.params.merge(route_params)
   end
 
   def already_built_response?
@@ -47,7 +48,8 @@ class ControllerBase
     @session ||= Session.new(@req)
   end
 
-  # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(name)
+    self.send(name)
+    render(name) unless @already_built_response
   end
 end

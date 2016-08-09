@@ -5,18 +5,23 @@ class Route
     @pattern = pattern
     @http_method = http_method
     @controller_class = controller_class
-    @action_name = pattern
+    @action_name = action_name
   end
 
   def matches?(req)
-    return false unless pattern == req.path
-    return false unless http_method =~ req.request_method.downcase.to_sym
+    return false unless !!pattern.match( req.path )
+    return false unless !!(http_method == req.request_method.downcase.to_sym)
     true
   end
 
-  # use pattern to pull out route params (save for later?)
-  # instantiate controller and call controller action
   def run(req, res)
+    params = pattern.match(req.path)
+    route_params = Hash.new
+    params.names.each_with_index do |key, idx|
+      route_params[key] = params[idx + 1]
+    end
+    controller = controller_class.new(req, res, route_params)
+    controller.invoke_action(action_name)
   end
 end
 
@@ -41,11 +46,20 @@ class Router
     end
   end
 
-  # should return the route that matches this request
   def match(req)
+    @routes.each do |route|
+      return route if route.matches?(req)
+    end
+    nil
   end
 
-  # either throw 404 or call run on a matched route
   def run(req, res)
+    matching = match(req)
+
+    unless matching
+      res.status = 404
+    else
+      matching.run(req, res)
+    end
   end
 end
