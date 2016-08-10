@@ -1,4 +1,5 @@
 require 'erb'
+require 'byebug'
 
 class ShowExceptions
   attr_reader :app
@@ -23,16 +24,20 @@ class ShowExceptions
 
     final = ERB.new(template).result(binding)
 
-    ['500', {'Content-type' => 'text/html'}, [final]]
+    ['500', {'Content-type' => 'text/html'}, final]
   end
 
   def render_source(e)
     error = e.backtrace.first
-
     dir_path = File.dirname(__FILE__)
     dir_path.slice!("/lib")
     root_path = Regexp.new("([^:]+)").match(error).to_s
-    full_path = "#{dir_path}/#{root_path}"
+
+    full_path = if root_path.include?(dir_path)
+      "#{root_path}"
+    else
+      "#{dir_path}/#{root_path}"
+    end
 
     line = error.split(":")[1].to_i
 
