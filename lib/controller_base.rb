@@ -57,13 +57,6 @@ class ControllerBase
   end
 
   def flash
-    if @flash
-      puts @flash.info
-      puts @flash.info.keys.first.class
-      puts @flash.future
-    else
-      puts "no flash"
-    end
     @flash ||= Flash.new(@req)
   end
 end

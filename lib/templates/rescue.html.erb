@@ -1,0 +1,17 @@
+<h1><%= e.class %></h1>
+
+<p>
+  <%= e.message %>
+</p>
+
+<ul>
+  <% e.backtrace.each do |trace| %>
+    <li>
+      <%= trace %>
+    </li>
+  <% end %>
+</ul>
+
+<p>
+  <%= source %>
+</p>
