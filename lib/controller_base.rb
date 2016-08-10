@@ -3,6 +3,7 @@ require 'active_support/core_ext'
 require 'erb'
 require 'byebug'
 require_relative './session'
+require_relative './flash'
 
 class ControllerBase
   attr_reader :req, :res, :params
@@ -23,6 +24,7 @@ class ControllerBase
     @res['Location'] = url
     @already_built_response = true
     session.store_session(@res)
+    flash.store_flash(@res)
     nil
   end
 
@@ -32,6 +34,7 @@ class ControllerBase
     @res['Content-Type'] = content_type
     @already_built_response = true
     session.store_session(@res)
+    flash.store_flash(@res)
     nil
   end
 
@@ -51,5 +54,16 @@ class ControllerBase
   def invoke_action(name)
     self.send(name)
     render(name) unless @already_built_response
+  end
+
+  def flash
+    if @flash
+      puts @flash.info
+      puts @flash.info.keys.first.class
+      puts @flash.future
+    else
+      puts "no flash"
+    end
+    @flash ||= Flash.new(@req)
   end
 end
