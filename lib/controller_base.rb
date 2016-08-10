@@ -52,11 +52,56 @@ class ControllerBase
   end
 
   def invoke_action(name)
+    check_authenticity_token if protected_class?
     self.send(name)
     render(name) unless @already_built_response
   end
 
   def flash
     @flash ||= Flash.new(@req)
+  end
+
+
+  #Authenticity checks
+
+  def self.protect_from_forgery
+    @@protected = true
+  end
+
+  def protected_class?
+    @@protected && !(req.request_method == "GET")
+  end
+
+  def form_authenticity_token
+    token = generate_auth_token
+    set_auth_cookie(token)
+    token
+  end
+
+  def generate_auth_token
+    @auth_token ||= SecureRandom::urlsafe_base64(32)
+  end
+
+  def set_auth_cookie(token)
+    token = token.to_json.delete('\"')
+    cookie = { path: '/', value: token}
+    res.set_cookie("authenticity_token", cookie)
+  end
+
+  def get_auth_cookie
+    cookie = Regexp.new("authenticity_token=([^\;]+)").match(req.env['HTTP_COOKIE'])
+    cookie ? cookie[1] : nil
+  end
+
+  def check_authenticity_token
+    unless get_auth_cookie && self.params["authenticity_token"] == get_auth_cookie
+      raise AuthenticityTokenError
+    end
+  end
+end
+
+class AuthenticityTokenError < StandardError
+  def initialize(msg="Invalid authenticity token")
+    super
   end
 end
