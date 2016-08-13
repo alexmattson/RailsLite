@@ -1,9 +1,7 @@
 require 'sqlite3'
-require 'byebug'
 
-# PRINT_QUERIES = ENV['PRINT_QUERIES'] == 'true'
 PRINT_QUERIES = 'true'
-ROOT_FOLDER = File.join(File.dirname(__FILE__)).gsub("/active_record_lite", "")
+ROOT_FOLDER = File.join(File.dirname(__FILE__)).gsub("/config/active_record_lite", "")
 DB_ROUTE = File.join(ROOT_FOLDER, 'db/')
 DATABASE_SQL_FILE = File.join(DB_ROUTE, 'database.sql')
 DATABASE_DB_FILE = File.join(DB_ROUTE, 'database.db')

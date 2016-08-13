@@ -1,4 +1,5 @@
 require 'erb'
+require 'byebug'
 
 class ShowExceptions
   attr_reader :app
@@ -16,8 +17,8 @@ class ShowExceptions
   private
 
   def render_exception(e)
-    dir_path = File.dirname(__FILE__)
-    path = "#{dir_path}/templates/rescue.html.erb"
+    dir_path = File.dirname(__FILE__).gsub("/config/app_rack/middleware", "")
+    path = "#{dir_path}/rails/templates/rescue.html.erb"
     template = File.read(path)
     source = render_source(e)
 
@@ -30,7 +31,7 @@ class ShowExceptions
     error = e.backtrace.find{|x| !x.include?("ruby") && !x.include?("erb") }
     # error = e.backtrace.first
     dir_path = File.dirname(__FILE__)
-    dir_path.slice!("/lib")
+    dir_path.gsub("/lib", "")
     root_path = Regexp.new("([^:]+)").match(error).to_s
 
     full_path = if root_path.include?(dir_path)
@@ -38,6 +39,7 @@ class ShowExceptions
     else
       "#{dir_path}/#{root_path}"
     end
+
 
     line = error.split(":")[1].to_i
 

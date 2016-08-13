@@ -1,8 +1,5 @@
-# require 'active_support'
-# require 'active_support/core_ext'
-require_relative 'active_record_lite/active_record_lite'
 require 'erb'
-require 'byebug'
+require_relative '../config/active_record_lite/active_record_lite'
 require_relative './session'
 require_relative './flash'
 
@@ -40,9 +37,10 @@ class ControllerBase
   end
 
   def render(template_name)
-    dir = self.class.to_s.underscore
+    dir = File.dirname(__FILE__) + "/../lib/views"
+    folder = self.class.to_s.underscore.gsub("_controller", "")
     file = "#{template_name.to_s}.html.erb"
-    path ="views/#{dir}/#{file}"
+    path ="#{dir}/#{folder}/#{file}"
 
     content = ERB.new(File.read(path)).result(binding)
     render_content(content, "text/html")

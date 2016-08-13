@@ -1,0 +1,5 @@
+require 'rack'
+require_relative '../../rails/controller_base.rb'
+require_relative 'middleware/static'
+require_relative 'middleware/show_exceptions'
+require_relative '../router'
