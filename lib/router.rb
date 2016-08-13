@@ -58,6 +58,7 @@ class Router
 
     unless matching
       res.status = 404
+      res.write("404")
     else
       matching.run(req, res)
     end

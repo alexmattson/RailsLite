@@ -1,21 +1,23 @@
 require 'rack'
 require_relative '../lib/controller_base.rb'
 require_relative '../lib/router'
+require_relative '../lib/active_record_lite/active_record_lite'
+require_relative '../lib/static'
+require_relative '../lib/show_exceptions'
 
+require 'byebug'
 # To test out your CSRF protection, go to the new dog form and
 # make sure it works! Alter the form_authenticity_token and see that
-# your server throws an error. 
+# your server throws an error.
+DBConnection.reset
 
-class Dog
-  attr_reader :name, :owner
-
-  def self.all
-    @dogs ||= []
-  end
+class Dog < SQLObject
+  my_attr_accessor :name, :owner
 
   def initialize(params = {})
     params ||= {}
     @name, @owner = params["name"], params["owner"]
+    super(params)
   end
 
   def errors
@@ -23,28 +25,24 @@ class Dog
   end
 
   def valid?
-    unless @owner.present?
+    valid = true
+    if @owner == ""
       errors << "Owner can't be blank"
-      return false
+      valid = false
     end
 
-    unless @name.present?
+    if @name == ""
       errors << "Name can't be blank"
-      return false
+      valid = false
     end
-    true
-  end
-
-  def save
-    return false unless valid?
-
-    Dog.all << self
-    true
+    valid
   end
 
   def inspect
     { name: name, owner: owner }.inspect
   end
+
+  finalize!
 end
 
 class DogsController < ControllerBase
@@ -52,7 +50,8 @@ class DogsController < ControllerBase
 
   def create
     @dog = Dog.new(params["dog"])
-    if @dog.save
+    if @dog.valid?
+      @dog.save
       flash[:notice] = "Saved dog successfully"
       redirect_to "/dogs"
     else
@@ -69,6 +68,10 @@ class DogsController < ControllerBase
   def new
     @dog = Dog.new
     render :new
+  end
+
+  def show
+    @dog = Dog.find(params["id"])
   end
 end
 
@@ -87,7 +90,13 @@ app = Proc.new do |env|
   res.finish
 end
 
+rack = Rack::Builder.new do
+  use ShowExceptions
+  use Static
+  run app
+end.to_app
+
 Rack::Server.start(
- app: app,
+ app: rack,
  Port: 3000
 )

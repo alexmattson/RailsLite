@@ -5,17 +5,16 @@ class Flash
 
   def initialize(req)
     cookie = req.cookies["_rails_lite_app_flash"]
-    @info = cookie ? JSON.parse(cookie) : {}
+    @info = FlashStore.new(cookie ? JSON.parse(cookie) : {})
     @future = Hash.new
   end
 
   def [](key)
-    @info[key.to_s] || @future[key]
+    @info[key.to_s]
   end
 
   def []=(key, val)
-    @future[key] = val
-    @info[key] = val
+    @future[key.to_s] = val
   end
 
   def store_flash(res)
@@ -25,5 +24,23 @@ class Flash
 
   def now
     @info
+  end
+end
+
+class FlashStore
+  def initialize(store = {})
+    @store = store
+  end
+
+  def [](key)
+    @store[key.to_s]
+  end
+
+  def []=(key, val)
+    @store[key.to_s] = val
+  end
+
+  def to_json
+    @store.to_json
   end
 end

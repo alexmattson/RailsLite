@@ -1,5 +1,6 @@
-require 'active_support'
-require 'active_support/core_ext'
+# require 'active_support'
+# require 'active_support/core_ext'
+require_relative 'active_record_lite/active_record_lite'
 require 'erb'
 require 'byebug'
 require_relative './session'
@@ -79,7 +80,7 @@ class ControllerBase
   end
 
   def generate_auth_token
-    @auth_token ||= SecureRandom::urlsafe_base64(32)
+    @auth_token ||= SecureRandom::generate
   end
 
   def set_auth_cookie(token)

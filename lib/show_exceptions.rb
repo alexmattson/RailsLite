@@ -1,5 +1,4 @@
 require 'erb'
-require 'byebug'
 
 class ShowExceptions
   attr_reader :app
@@ -24,11 +23,12 @@ class ShowExceptions
 
     final = ERB.new(template).result(binding)
 
-    ['500', {'Content-type' => 'text/html'}, final]
+    ['500', {'Content-type' => 'text/html'}, [final]]
   end
 
   def render_source(e)
-    error = e.backtrace.first
+    error = e.backtrace.find{|x| !x.include?("ruby") && !x.include?("erb") }
+    # error = e.backtrace.first
     dir_path = File.dirname(__FILE__)
     dir_path.slice!("/lib")
     root_path = Regexp.new("([^:]+)").match(error).to_s
@@ -41,22 +41,22 @@ class ShowExceptions
 
     line = error.split(":")[1].to_i
 
-    raw_source = File.readlines(full_path)[line - 2 .. line + 4]
+    raw_source = File.readlines(full_path)[line - 4 .. line + 3]
     format_source(raw_source)
   end
 
   def format_source(raw)
     raw.each {|l| l.slice!("\n")}
 
-    final = ""
+    final = "<div style='border-style: solid; border-color: red;'>"
     raw.each_with_index do |line, idx|
-      if idx == 4
-        final += "<p style='background: yellow; width: 100%; height:10pt;'>#{line}</p>"
+      if idx == 3
+        final += "<pre style='background: yellow; width: 100%; height:10pt;'>#{line}</pre>"
       else
-        final += "<p>#{line}</p>"
+        final += "<pre>#{line}</pre>"
       end
     end
-    final
+    final + "</div>"
   end
 
 end
