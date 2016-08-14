@@ -11,7 +11,7 @@ app = Proc.new do |env|
 end
 
 rack = Rack::Builder.new do
-  # use ShowExceptions
+  use ShowExceptions
   use Static
   run app
 end.to_app
