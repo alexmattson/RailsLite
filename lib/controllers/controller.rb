@@ -1,5 +1,8 @@
-Dir[File.dirname(__FILE__) + "../views/dogs/*.html.erb"].each {|file| require file }
-require_relative '../models/dog'
+Dir[File.dirname(__FILE__) + "../views/MODEL/*.html.erb"].each {|file| require file }
+require_relative '../models/MODEL'
+
+# Change model name in boht view and model require paths above
+# Fill in model name for controller below
 
 class ModelsController < ControllerBase
   protect_from_forgery
