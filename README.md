@@ -1,80 +1,158 @@
 
-Rails Lite
-=================
+[![railslite.jpg](https://s4.postimg.org/514g1lo0d/railslite.jpg)](//github.com/amattson21/RailsLite/)
+
 
 Demo:
 -----
 
-1. Click here to download sample RailsList project I built
-2. run ``$ ruby rails_lite``
-3. Create/Edit/Delete Dogs
-4. visit '/raise' to see custom built error handling middleware
+1. [Click here](http://) to download sample RailsList project
+2. run ``$ ruby on_rails_lite`` to launch app on localhost:3000
+3. Create/Edit/Delete Dogs on the sample site
+4. visit '/raise' to see simple custom built error handling middleware
+5. If you would like to create a custom app on this platform to test its functionality, please refer to the usage docs below.
 
 Summary:
 --------
-RailsLite is a project dedicated to fully understanding the construction of the rails framework. It is a _very_ stripped down version of Ruby on Rails that is integrated with my ActiveRecordLite project.
+RailsLite is a project dedicated to fully understanding the construction of the rails framework.
 
-[![Logo](/rails/images/railslite.jpg)](//github.com/amattson21/RailsLite/)
+It is a _very_ stripped down version of Ruby on Rails that is integrated with my custom [ActiveRecordLite project](http://github.com/amattson21/ActiveRecordLite).
 
 Usage:
 ------
-```ruby
-require_relative 'lib/active_record_lite'
 
-# open database connection
-# below command will auto-generate a seeded db/cats.sqlite3
-DBConnection.reset
+### Getting Started with a New App ###
+
+
+First things first, you will need to clone this repository.
+
+Rename the file to your desired app name and you're all ready to get started.
+
+Here is a quick outine of the file strcture:
+
+```
++-- config 						// ORM, Rack, Middleware and Router
+|	+--active_record_lite
+|	|	...
+|	+--app_rack
+|	|	+--middleware
+|	|	|	...
+|	|	...
+|	+--router.rb
++--db							// database
+|	+--database.sql
+|	+--database.db* 			*file is added after initial run
++--lib							// application files
+|	+--assets
+|	|	...
+|	+--controllers
+|	|	...
+|	+--models
+|	|	...
+|	+--views
+|	|	...
++--rails 						//rails lite specific files
+|	...
++--Gemfile
+...
+
+
 ```
 
-Next, define a model:
-```ruby
-class Human < SQLObject
-  self.table_name = 'humans'
-  my_attr_accessor :id, :fname, :lname, :house_id
 
-  has_many :cats, foreign_key: :owner_id
-  belongs_to :house
+### Creating a Model ###
+
+Duplicate the ``model.rb`` file that we currently have in the lib/models folder and rename to your desired model name.
+
+```ruby
+class Model < SQLObject
+  my_attr_accessor
+
+  def initialize(params = {})
+    params ||= {}
+    super(params)
+  end
+
+  def errors
+    @errors ||= []
+  end
+
+  def valid?
+  end
+
+  finalize!
 end
 ```
-The table name ``"humans"`` will be will be overridden since our program defaults to ``"humen"`` and we do not want that.
-To override the default, call ``self.table_name = "new_name"``
 
-By using ``my_attr_accessor``, we allow mass-assignment:
+First thing to go over is the name change to ``my_attr_accessor``, although functionally the same as a standard rails ``attr_accessor``.
+
+Next is the way that params must be past in. You must pass params in as a hash as indicated in our intialization function. This also means setting instance variables in the following way ``@sample = params["sample"]``
+
+Finally, validations can be written in the ``valid?`` method. Any custom errors that you wish to raise within can be pushed into your errors array allowing you to call ``Model.errors`` to propigate flash. Here is a sample presence validation method:
+
 ```ruby
-devon = Human.new(fname: 'Devon', lname: 'Watts', house_id: 1)
+def valid?
+    valid = true
+    if @owner == ""
+      errors << "Owner can't be blank"
+      valid = false
+    end
+
+    if @name == ""
+      errors << "Name can't be blank"
+      valid = false
+    end
+    valid
+  end
 ```
 
-The ``foreign_key`` for ``has_many :cats`` is auto-generated to be ``:human_id``. This is wrong in the case of our seed data.
-For this reason ``has_many`` and ``belongs_to`` associations accept overrides for ``:class_name``, ``:foreign_key``, and `:primary_key`:
-```ruby
-has_many :cats,
-foreign_key: :owner_id,
-class_name: 'Cat',
-primary_key: :id
+### Creating Routes ###
+
+To create routes, use the following structure:
+```
+HTTP_METHOD PATTERN, CONTROLLER_CLASS, ACTION_NAME
+```  
+  You can define all patterns in regex.
+
+  Here is an example route group:
+```ruby  
+  get Regexp.new("^/users$"), UsersController, :index
+  get Regexp.new("^/users/(?<id>\\d+)$"), UsersController, :show
+  get Regexp.new("^/users/new$"), UsersController, :new
+  post Regexp.new("^/users$"), UsersController, :create
+  get Regexp.new("^/users/(?<id>\\d+)/edit"), UsersController, :edit
+  patch Regexp.new("^/users/(?<id>\\d+)$"), UsersController, :update
+  put Regexp.new("^/users/(?<id>\\d+)$"), UsersController, :update
+  delete Regexp.new("^/users/(?<id>\\d+)$"), UsersController, :destroy
 ```
 
+### Creating a Controller ###
 
-Last, there is support for ``has_one_through``:
+You can duplicate the ``controller.rb`` file that we currently have in the lib/controllers folder and rename to your desired controller name. It is important that this is a plural veriosn of your model name followed by an '_controller.rb'.
+
+i.e. if you have a ``dog.rb`` contorller you will need a 'dogs_controller.rb'.
+
+In your create or update methods be sure to structure your if statments around the ``valid?`` method for that is where the actual checks will take place. For example:
+
 ```ruby
-class Cat < SQLObject
-  set_table_name 'cats'
-  my_attr_accessor :id, :name, :owner_id
-
-  belongs_to :human, foreign_key: :owner_id
-  has_one_through :house, :human, :house
-end
+  def create
+    @dog = Dog.new(params["dog"])
+    if @dog.valid?
+      @dog.save
+      flash[:notice] = "Saved dog successfully"
+      redirect_to "/dogs"
+    else
+      flash.now[:errors] = @dog.errors
+      render :new
+    end
+  end
 ```
-and ``has_many_through``:
-```ruby
-class House < SQLObject
-  my_attr_accessor :id, :address
 
-  has_many :humans
-  has_many_through :cats, :humans, :cats
-end
+At the top of each class ``protect_from_forgery`` has been implimented to protect again CSRF attacks. Ensure that all forms include an authentication token.
+```html
+<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
 ```
+### Creating Views ###
+
 
 ---
 Developed by [Alex Mattson](http://www.alexmattson.com)
-validations :
-done through a valid? function in the model
