@@ -4,7 +4,7 @@ Rails Lite
 
 Demo:
 -----
-Build simple
+
 1. Click here to download sample RailsList project I built
 2. run ``$ ruby rails_lite``
 3. Create/Edit/Delete Dogs
@@ -14,7 +14,7 @@ Summary:
 --------
 RailsLite is a project dedicated to fully understanding the construction of the rails framework. It is a _very_ stripped down version of Ruby on Rails that is integrated with my ActiveRecordLite project.
 
-[![Logo](/rails/images/railslite.png)](//github.com/amattson21/RailsLite/)
+[![Logo](/rails/images/railslite.jpg)](//github.com/amattson21/RailsLite/)
 
 Usage:
 ------
