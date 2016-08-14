@@ -29,7 +29,7 @@ First things first, you will need to clone this repository.
 
 Rename the file to your desired app name and you're all ready to get started.
 
-Here is a quick outine of the file strcture:
+Here is a quick outline of the file structure:
 
 ```
 +-- config 						// ORM, Rack, Middleware and Router
@@ -87,9 +87,9 @@ end
 
 First thing to go over is the name change to ``my_attr_accessor``, although functionally the same as a standard rails ``attr_accessor``.
 
-Next is the way that params must be past in. You must pass params in as a hash as indicated in our intialization function. This also means setting instance variables in the following way ``@sample = params["sample"]``
+Next is the way that params must be past in. You must pass params in as a hash as indicated in our initialization function. This also means setting instance variables in the following way ``@sample = params["sample"]``
 
-Finally, validations can be written in the ``valid?`` method. Any custom errors that you wish to raise within can be pushed into your errors array allowing you to call ``Model.errors`` to propigate flash. Here is a sample presence validation method:
+Finally, validations can be written in the ``valid?`` method. Any custom errors that you wish to raise within can be pushed into your errors array allowing you to call ``Model.errors`` to propagate flash. Here is a sample presence validation method:
 
 ```ruby
 def valid?
@@ -108,7 +108,7 @@ def valid?
 ```
 ### Adding to the Database ###
 
-To add a database table for your model just hade over to the ``database.sql`` file and add the tble there through sql commands.
+To add a database table for your model just head over to the ``database.sql`` file and add the table there through sql commands.
 
 ```sql
 CREATE TABLE dogs (
@@ -119,7 +119,7 @@ CREATE TABLE dogs (
 ```
 You will need to reset the database to add the table. To accomplish this, simply run ``ruby reset_database``.
 
-Feel free to add any seed data to the this file aswell.
+Feel free to add any seed data to the this file as well.
 
 
 ### Creating Routes ###
@@ -156,7 +156,7 @@ class DogsController < ControllerBase
 ...
 ```
 
-In your create or update methods be sure to structure your if statments around the ``valid?`` method since that is where the actual checks will take place. For example:
+In your create or update methods be sure to structure your if statements around the ``valid?`` method since that is where the actual checks will take place. For example:
 
 ```ruby
   def create
@@ -172,13 +172,13 @@ In your create or update methods be sure to structure your if statments around t
   end
 ```
 
-At the top of each class ``protect_from_forgery`` has been implimented to protect again CSRF attacks. Ensure that all forms include an authentication token.
+At the top of each class ``protect_from_forgery`` has been implemented to protect again CSRF attacks. Ensure that all forms include an authentication token.
 ```html
 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
 ```
 ### Creating Views ###
 
-Nothing has changed with views in comparision to the original rails. Same plural model name structure for the file and file names matching controller method names.
+Nothing has changed with views in comparison to the original rails. Same plural model name structure for the file and file names matching controller method names.
 
 The ``application.html.erb`` resides in the layout folder in the views.
 
