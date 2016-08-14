@@ -1,4 +1,5 @@
 require 'rack'
+require 'byebug'
 
 class Static
   attr_reader :app
@@ -13,7 +14,7 @@ class Static
   end
 
   def public_asset?(req)
-    req.path.include?("/public")
+    !!Regexp.new('.*(\.\w+)').match(req.path)
   end
 
   def get_asset(req)
@@ -34,13 +35,14 @@ class Static
 
   def full_path(req)
     dir_path = File.dirname(__FILE__)
-    dir_path.slice!("/lib")
-    root_path = req.path
-    full_path = if root_path.include?(dir_path)
-      "#{root_path}"
-    else
-      "#{dir_path}#{root_path}"
-    end
+    dir_path.slice!("/config/app_rack/middleware")
+    root_path = "/lib/assets/images"
+    file_name = req.path
+    full_path = if file_name.include?(dir_path)
+                  "#{file_name}"
+                else
+                  "#{dir_path}#{root_path}#{file_name}"
+                end
   end
 
   MIME_TYPE = {".au" => "audio/basic",

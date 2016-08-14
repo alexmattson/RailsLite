@@ -4,16 +4,21 @@
   <% end %>
 <% end %>
 
-<form action="/dogs" method="POST">
-  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+<h1>New Dog</h1>
+<div class="container">
+  <form action="/dogs" method="POST">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
 
-  <label>Name
-    <input type="text" name="dog[name]" value="<%= @dog.name %>">
-  </label>
+    <label> <h2>Dog's Name</h2>
+      <input class="form-input" type="text" name="dog[name]" value="<%= @dog.name %>">
+    </label>
 
-  <label>Owner
-    <input type="text" name="dog[owner]" value="<%= @dog.owner %>">
-  </label>
+    <label> <h2>Owner</h2>
+      <input class="form-input" type="text" name="dog[owner]" value="<%= @dog.owner %>">
+    </label>
 
-  <input type="submit">
-</form>
+    <input type="submit" class="submit-button">
+  </form>
+</div>
+
+<%= link_to "Back to All Dogs", "/dogs" %>

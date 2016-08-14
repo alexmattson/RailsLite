@@ -70,14 +70,14 @@ class ControllerBase
   end
 
   def link_to(title, path)
-    "<a href='#{path}'>#{title}</a>"
+    "<a href='#{path}' class='link_to'>#{title}</a>"
   end
 
   def button_to(title, path, options)
     "<form method='GET' action='#{path}' class='button_to'>" +
-      "<input type='hidden' name='_method' value='#{options[:method].to_s.upcase}'>" + 
+      "<input type='hidden' name='_method' value='#{options[:method].to_s.upcase}'>" +
       "<input type='hidden' name='authenticity_token' value='#{form_authenticity_token}'>" +
-      "<input value='#{title}' type='submit' />" +
+      "<input value='#{title}' type='submit' class='#{options[:class].to_s}' />" +
     "</form>"
   end
 

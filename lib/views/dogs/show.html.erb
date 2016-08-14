@@ -1,2 +1,8 @@
-<%= @dog.name %>
-<%= @dog.owner %>
+<div class="container">
+  <img src="../dog_icon.png" alt="Dog Icon" height="250" width="250" class="dog_icon">
+  <h2><%= @dog.name %></h2>
+  <h3>Owner: <%= @dog.owner %></h3>
+
+</div>
+
+<%= link_to "Back to All Dogs", "/dogs" %>

@@ -1,16 +1,22 @@
 <h1>ALL THE DOGS</h1>
 
 <% if flash[:notice] %>
-  Notice: <%= flash[:notice] %>
-<% end %>
-
-
-<pre>Dog Data</pre>
-<% @dogs.each do |dog| %>
-  <h2> Name:<%= dog.name %></h2>
-  <h3> Owner:<%= dog.owner %></h3>
-  <%= button_to "Delete Dog", "/dogs/#{dog.id}", method: :delete %>
-  <%= button_to "Edit Dog", "/dogs/#{dog.id}/edit", method: :get %>
+  <p>Notice: <%= flash[:notice] %></p>
 <% end %>
 
 <%= link_to "New Dog!", "/dogs/new" %>
+
+<% @dogs.each do |dog| %>
+  <div class="dog">
+    <img src="dog_icon.png" alt="Dog Icon" height="250" width="250" class="dog_icon">
+    <div class="info">
+      <h2><%= dog.name %></h2>
+      <h3> Owner: <%= dog.owner %></h3>
+      <%= link_to "See the Dog", "/dogs/#{dog.id}" %>
+    </div>
+    <div class="buttons">
+      <%= button_to "Delete Dog", "/dogs/#{dog.id}", method: :delete, class: :delete %>
+      <%= button_to "Edit Dog", "/dogs/#{dog.id}/edit", method: :get, class: :edit %>
+    </div>
+  </div>
+<% end %>
