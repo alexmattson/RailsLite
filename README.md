@@ -12,7 +12,7 @@ It is a _very_ stripped down version of Ruby on Rails that is integrated with my
 Demo:
 -----
 
-1. [Click here](http://) to download sample RailsList project
+1. [Click here](http://github.com/amattson21/RailsLite/rails/assets/DogsLite.zip) to download sample RailsList project
 2. run ``$ ruby on_rails_lite`` to launch app on localhost:3000
 3. Create/Edit/Delete Dogs on the sample site
 4. visit '/raise' to see simple custom built error handling middleware
