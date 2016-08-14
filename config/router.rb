@@ -17,16 +17,5 @@ Dir[File.dirname(__FILE__) + "/../lib/controllers/*.rb"].each {|file| require fi
   # patch Regexp.new("^/users/(?<id>\\d+)$"), UsersController, :update
   # put Regexp.new("^/users/(?<id>\\d+)$"), UsersController, :update
   # delete Regexp.new("^/users/(?<id>\\d+)$"), UsersController, :destroy
-
-  get Regexp.new("^/dogs$"), DogsController, :index
-  get Regexp.new("^/dogs/(?<id>\\d+)$"), DogsController, :show
-  get Regexp.new("^/dogs/new$"), DogsController, :new
-  post Regexp.new("^/dogs$"), DogsController, :create
-  get Regexp.new("^/dogs/(?<id>\\d+)/edit$"), DogsController, :edit
-  patch Regexp.new("^/dogs/(?<id>\\d+)$"), DogsController, :update
-  delete Regexp.new("^/dogs/(?<id>\\d+)$"), DogsController, :destroy
-
-
-  #for error demenstration
-  get Regexp.new("^/raise$"), DogsController, :critical
+  
 end
