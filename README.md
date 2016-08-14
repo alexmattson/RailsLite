@@ -15,7 +15,7 @@ Demo:
 1. [Click here](https://github.com/amattson21/RailsLite/blob/master/rails/assets/DogsLite.zip) to download sample RailsList project
 2. run ``$ ruby on_rails_lite`` to launch app on localhost:3000
 3. Create/Edit/Delete Dogs on the sample site
-4. visit '/raise' to see simple custom built error handling middleware
+4. visit '/raise' to see simple custom built error handling middleware that is based on the style of the "Better Errors" gem.
 5. If you would like to create a custom app on this platform to test its functionality, please refer to the usage docs below.
 
 
