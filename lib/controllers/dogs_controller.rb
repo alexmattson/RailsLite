@@ -49,4 +49,8 @@ class DogsController < ControllerBase
     @dog.destroy
     redirect_to "/dogs"
   end
+
+  def critical
+    raise "Critical error. Abort, abort, abort"
+  end
 end

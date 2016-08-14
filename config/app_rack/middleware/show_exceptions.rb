@@ -29,8 +29,7 @@ class ShowExceptions
 
   def render_source(e)
     error = e.backtrace.find{|x| !x.include?("ruby") && !x.include?("erb") }
-    # error = e.backtrace.first
-    dir_path = File.dirname(__FILE__)
+    dir_path = File.dirname(__FILE__).gsub("config/app_rack/middleware", "")
     dir_path.gsub("/lib", "")
     root_path = Regexp.new("([^:]+)").match(error).to_s
 
@@ -39,7 +38,6 @@ class ShowExceptions
     else
       "#{dir_path}/#{root_path}"
     end
-
 
     line = error.split(":")[1].to_i
 
