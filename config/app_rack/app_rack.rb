@@ -1,6 +1,7 @@
-require_relative 'app_rack_dependencies.rb'
+require_relative '../active_record_lite/active_record_lite'
+DBConnection.open('database.db')
 
-DBConnection.reset
+require_relative 'app_rack_dependencies.rb'
 
 app = Proc.new do |env|
   req = Rack::Request.new(env)

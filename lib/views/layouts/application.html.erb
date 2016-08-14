@@ -2,11 +2,17 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <%= style %>
     <title></title>
   </head>
   <body>
+    <% if flash[:errors] %>
+      <% flash[:errors].each do |error| %>
+        <%= error %>
+      <% end %>
+    <% end %>
 
     <%= yield %>
-    
+
   </body>
 </html>

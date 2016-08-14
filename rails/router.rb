@@ -10,7 +10,11 @@ class Route
 
   def matches?(req)
     return false unless !!pattern.match( req.path )
-    return false unless !!(http_method == req.request_method.downcase.to_sym)
+    if req.params["_method"]
+      return false unless !!(http_method == req.params["_method"].downcase.to_sym)
+    else
+      return false unless !!(http_method == req.request_method.downcase.to_sym)
+    end
     true
   end
 
@@ -40,7 +44,7 @@ class Router
     instance_eval(&proc)
   end
 
-  [:get, :post, :put, :delete].each do |http_method|
+  [:get, :post, :put, :delete, :patch].each do |http_method|
     define_method(http_method) do |pattern, controller_class, action_name|
       add_route(pattern, http_method, controller_class, action_name)
     end
@@ -58,7 +62,13 @@ class Router
 
     unless matching
       res.status = 404
-      res.write("404")
+
+      dir_path = File.dirname(__FILE__)
+      path = "#{dir_path}/templates/404.html.erb"
+      template = File.read(path)
+      final = ERB.new(template).result(binding)
+
+      res.write(final)
     else
       matching.run(req, res)
     end

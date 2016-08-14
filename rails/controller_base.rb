@@ -40,14 +40,11 @@ class ControllerBase
     dir = File.dirname(__FILE__) + "/../lib/views"
     folder = self.class.to_s.underscore.gsub("_controller", "")
     file = "#{template_name.to_s}.html.erb"
-    path ="#{dir}/#{folder}/#{file}"
+    page_path ="#{dir}/#{folder}/#{file}"
 
-    content = ERB.new(File.read(path)).result(binding)
+    page = ERB.new(File.read(page_path)).result(binding)
+    content = layout{page}
     render_content(content, "text/html")
-  end
-
-  def session
-    @session ||= Session.new(@req)
   end
 
   def invoke_action(name)
@@ -56,13 +53,45 @@ class ControllerBase
     render(name) unless @already_built_response
   end
 
+  private
+
+  #Building render
+  def layout
+    dir = File.dirname(__FILE__) + "/../lib/views"
+    layout_path = "#{dir}/layouts/application.html.erb"
+    ERB.new(File.read(layout_path)).result(binding)
+  end
+
+  def style
+    dir = File.dirname(__FILE__) + "/../lib/assets"
+    layout_path = "#{dir}/stylesheets/application.css"
+    content = File.read(layout_path)
+    "<style> #{content} </style>"
+  end
+
+  def link_to(title, path)
+    "<a href='#{path}'>#{title}</a>"
+  end
+
+  def button_to(title, path, options)
+    "<form method='GET' action='#{path}' class='button_to'>" +
+      "<input type='hidden' name='_method' value='#{options[:method].to_s.upcase}'>" + 
+      "<input type='hidden' name='authenticity_token' value='#{form_authenticity_token}'>" +
+      "<input value='#{title}' type='submit' />" +
+    "</form>"
+  end
+
+  #Persistence hashes
+  def session
+    @session ||= Session.new(@req)
+  end
+
   def flash
     @flash ||= Flash.new(@req)
   end
 
 
   #Authenticity checks
-
   def self.protect_from_forgery
     @@protected = true
   end

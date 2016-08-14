@@ -4,5 +4,13 @@
   Notice: <%= flash[:notice] %>
 <% end %>
 
-<pre>Dog Data: <%= @dogs.to_s %></pre>
-<a href="/dogs/new">New Dog!</a>
+
+<pre>Dog Data</pre>
+<% @dogs.each do |dog| %>
+  <h2> Name:<%= dog.name %></h2>
+  <h3> Owner:<%= dog.owner %></h3>
+  <%= button_to "Delete Dog", "/dogs/#{dog.id}", method: :delete %>
+  <%= button_to "Edit Dog", "/dogs/#{dog.id}/edit", method: :get %>
+<% end %>
+
+<%= link_to "New Dog!", "/dogs/new" %>

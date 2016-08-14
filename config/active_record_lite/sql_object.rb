@@ -14,10 +14,6 @@ class SQLObject < AttrAccessorObject
   end
 
   def self.finalize!
-    # @id = nil
-    # define_method "id" do
-    #   instance_variable_get("@id")
-    # end
     self.columns.each do |column|
       define_method column do
         self.attributes["#{column}".to_sym]
@@ -83,7 +79,8 @@ class SQLObject < AttrAccessorObject
     self.id = DBConnection.last_insert_row_id
   end
 
-  def update
+  def update(params)
+    update_attributes(params)
     col_names = get_update_column_names
     DBConnection.execute(<<-SQL, *attribute_values, self.id)
       UPDATE
@@ -99,6 +96,15 @@ class SQLObject < AttrAccessorObject
     self.id.nil? ? insert : update
   end
 
+  def destroy
+    DBConnection.execute(<<-SQL, self.id)
+      DELETE FROM
+        #{self.class.table_name}
+      WHERE
+        id = ?
+    SQL
+  end
+
   private
   def get_insert_column_names
     "(#{column_names.join(', ')})"
@@ -112,6 +118,12 @@ class SQLObject < AttrAccessorObject
     col = self.class.columns
     col.reject!{|x| x == :id}
     col
+  end
+
+  def update_attributes(params)
+    params.each do |key, val|
+      @attributes[key.to_sym] = val
+    end
   end
 
 end
