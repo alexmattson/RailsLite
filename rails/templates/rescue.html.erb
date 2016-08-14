@@ -43,57 +43,33 @@
     /* ---------------------------------------------------------------------
      * Basic layout
      * --------------------------------------------------------------------- */
-    /* Small */
-    @media screen and (max-width: 1100px) {
-        html {
-            overflow-y: scroll;
-        }
-        body {
-            margin: 0 20px;
-        }
-        header.exception {
-            margin: 0 -20px;
-        }
-        nav.sidebar {
-            padding: 0;
-            margin: 20px 0;
-        }
-        ul.frames {
-            max-height: 200px;
-            overflow: auto;
-        }
-    }
-    /* Wide */
-    @media screen and (min-width: 1100px) {
-        header.exception {
-           position: fixed;
-           top: 0;
-           left: 0;
-           right: 0;
-        }
-        nav.sidebar,
-        .frame_info {
-            position: fixed;
-            top: 95px;
-            bottom: 0;
-            box-sizing: border-box;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        nav.sidebar {
-            width: 40%;
-            left: 20px;
-            top: 115px;
-            bottom: 20px;
-        }
-        .frame_info {
-            right: 0;
-            left: 40%;
-            padding: 20px;
-            padding-left: 10px;
-            margin-left: 30px;
-        }
-    }
+      header.exception {
+         position: fixed;
+         top: 0;
+         left: 0;
+         right: 0;
+         z-index: 100;
+      }
+      nav.sidebar,
+      .frame_info {
+          position: relative;
+          box-sizing: border-box;
+          overflow-y: auto;
+          overflow-x: hidden;
+      }
+      nav.sidebar {
+          width: calc(100% - 40px);
+          left: 20px;
+          top: 130px;
+          bottom: 20px;
+      }
+      .frame_info {
+          right: 0;
+          left: 40%;
+          padding: 20px;
+          padding-left: 10px;
+          margin-left: 30px;
+      }
     nav.sidebar {
         background: #d3d3da;
         border-top: solid 3px #a33;
@@ -150,19 +126,6 @@
         height: auto;
         max-height: 7.5em;
     }
-    @media screen and (max-width: 1100px) {
-        header.exception {
-            height: auto;
-        }
-        header.exception h2,
-        header.exception p {
-            padding-right: 20px;
-            overflow-y: auto;
-            word-wrap: break-word;
-            height: auto;
-            max-height: 7em;
-        }
-    }
     /* ---------------------------------------------------------------------
      * Navigation
      * --------------------------------------------------------------------- */
@@ -211,15 +174,6 @@
         box-shadow: inset 0 -1px 0 #e2e2e2;
         padding: 7px 20px;
         cursor: pointer;
-        overflow: hidden;
-    }
-    ul.frames .name,
-    ul.frames .location {
-        overflow: hidden;
-        height: 1.5em;
-        white-space: nowrap;
-        word-wrap: none;
-        text-overflow: ellipsis;
     }
     ul.frames .method {
         color: #966;
@@ -232,76 +186,6 @@
     ul.frames .line {
         font-weight: bold;
     }
-    /* Selected frame */
-    ul.frames li.selected {
-        background: #38a;
-        box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.01), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-    }
-    ul.frames li.selected .name,
-    ul.frames li.selected .method,
-    ul.frames li.selected .location {
-        color: white;
-        text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-    }
-    ul.frames li.selected .location {
-        opacity: 0.6;
-    }
-    /* Iconography */
-    ul.frames li {
-        padding-left: 60px;
-        position: relative;
-    }
-    ul.frames li .icon {
-        display: block;
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
-        border-radius: 15px;
-        text-align: center;
-        background: white;
-        border: solid 2px #ccc;
-        font-size: 9pt;
-        font-weight: 200;
-        font-style: normal;
-        position: absolute;
-        top: 14px;
-        left: 20px;
-    }
-    ul.frames .icon.application {
-        background: #808090;
-        border-color: #555;
-    }
-    ul.frames .icon.application:before {
-        content: 'A';
-        color: white;
-        text-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-    }
-    /* Responsiveness -- flow to single-line mode */
-    @media screen and (max-width: 1100px) {
-        ul.frames li {
-            padding-top: 6px;
-            padding-bottom: 6px;
-            padding-left: 36px;
-            line-height: 1.3;
-        }
-        ul.frames li .icon {
-            width: 11px;
-            height: 11px;
-            line-height: 11px;
-            top: 7px;
-            left: 10px;
-            font-size: 5pt;
-        }
-        ul.frames .name,
-        ul.frames .location {
-            display: inline-block;
-            line-height: 1.3;
-            height: 1.3em;
-        }
-        ul.frames .name {
-            margin-right: 10px;
-        }
-    }
     /* ---------------------------------------------------------------------
      * Monospace
      * --------------------------------------------------------------------- */
@@ -313,13 +197,11 @@
      * Display area
      * --------------------------------------------------------------------- */
     .trace_info {
-        float: right;
-        position: relative;;
-          top: 115px;
-          right: 20px;
-        width: 53%;
+        position: relative;
+          top: 110px;
+        width: calc(100% - 40px);
         background: #fff;
-        padding: 6px;
+        margin-left: 20px;
         border-radius: 3px;
         margin-bottom: 2px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.03), 1px 1px 0 rgba(0, 0, 0, 0.05), -1px 1px 0 rgba(0, 0, 0, 0.05), 0 0 0 4px rgba(0, 0, 0, 0.04);
@@ -405,15 +287,24 @@
 
     <div class='top'>
         <header class="exception">
-            <h2><strong><%= e.class %></strong> <span>at <%="path"%></span></h2>
+            <h2><strong><%= e.class %></strong> </h2>
             <p><%= e.message %></p>
         </header>
     </div>
 
+    <header class="trace_info clearfix">
+      <div class="title">
+          <div class="location"><span class="filename"><a href="<%= "editor_url(@frame)" %>"><%= e.backtrace.first %></a></span></div>
+      </div>
+      <div class="code_block clearfix">
+          <%= source  %>
+      </div>
+    </header>
+
     <section class="backtrace">
         <nav class="sidebar">
             <nav class="tabs">
-                <a href="#" id="application_frames">Backtrace</a>
+                <span>Backtrace</span>
             </nav>
             <ul class="frames">
                 <% e.backtrace.each_with_index do |frame, index| %>
@@ -421,11 +312,7 @@
                         <span class='stroke'></span>
                         <div class="info">
                             <div class="name">
-                                <%= "Name" %>
                                 <%= frame %>
-                            </div>
-                            <div class="location">
-                                <%= "location" %>
                             </div>
                         </div>
                     </li>
@@ -437,16 +324,6 @@
             <div class="frame_info" id="frame_info_<%= index %>" style="display:none;"></div>
         <% end %>
     </section>
-
-    <header class="trace_info clearfix">
-      <div class="title">
-          <h2 class="name"><%= "name" %></h2>
-          <div class="location"><span class="filename"><a href="<%= "editor_url(@frame)" %>"><%= "path" %></a></span></div>
-      </div>
-      <div class="code_block clearfix">
-          <%= source  %>
-      </div>
-    </header>
 </body>
 
 </html>

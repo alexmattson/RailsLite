@@ -41,7 +41,7 @@ class ShowExceptions
 
     line = error.split(":")[1].to_i
 
-    raw_source = File.readlines(full_path)[line - 4 .. line + 3]
+    raw_source = File.readlines(full_path)[line - 10 .. line + 9]
     format_source(raw_source)
   end
 
@@ -50,7 +50,7 @@ class ShowExceptions
 
     final = "<div style='border-style: solid; border-color: red;'>"
     raw.each_with_index do |line, idx|
-      if idx == 3
+      if idx == 9
         final += "<pre style='background: yellow; width: 100%; height:10pt;'>#{line}</pre>"
       else
         final += "<pre>#{line}</pre>"
