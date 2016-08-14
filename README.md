@@ -1,4 +1,11 @@
 
+
+Summary:
+--------
+RailsLite is a project dedicated to fully understanding the construction of the rails framework.
+
+It is a _very_ stripped down version of Ruby on Rails that is integrated with my custom [ActiveRecordLite project](http://github.com/amattson21/ActiveRecordLite).
+
 [![railslite.jpg](https://s4.postimg.org/514g1lo0d/railslite.jpg)](//github.com/amattson21/RailsLite/)
 
 
@@ -11,11 +18,6 @@ Demo:
 4. visit '/raise' to see simple custom built error handling middleware
 5. If you would like to create a custom app on this platform to test its functionality, please refer to the usage docs below.
 
-Summary:
---------
-RailsLite is a project dedicated to fully understanding the construction of the rails framework.
-
-It is a _very_ stripped down version of Ruby on Rails that is integrated with my custom [ActiveRecordLite project](http://github.com/amattson21/ActiveRecordLite).
 
 Usage:
 ------
@@ -61,7 +63,7 @@ Here is a quick outine of the file strcture:
 
 ### Creating a Model ###
 
-Duplicate the ``model.rb`` file that we currently have in the lib/models folder and rename to your desired model name.
+Duplicate the ``model.rb`` file that we currently have in the lib/models folder and rename to your desired model name. Ensure singularity of the model name.
 
 ```ruby
 class Model < SQLObject
@@ -104,6 +106,21 @@ def valid?
     valid
   end
 ```
+### Adding to the Database ###
+
+To add a database table for your model just hade over to the ``database.sql`` file and add the tble there through sql commands.
+
+```sql
+CREATE TABLE dogs (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  owner VARCHAR(255) NOT NULL
+);
+```
+You will need to reset the database to add the table. To accomplish this, simply run ``ruby reset_database``.
+
+Feel free to add any seed data to the this file aswell.
+
 
 ### Creating Routes ###
 
@@ -127,11 +144,19 @@ HTTP_METHOD PATTERN, CONTROLLER_CLASS, ACTION_NAME
 
 ### Creating a Controller ###
 
-You can duplicate the ``controller.rb`` file that we currently have in the lib/controllers folder and rename to your desired controller name. It is important that this is a plural veriosn of your model name followed by an '_controller.rb'.
+You can duplicate the ``controller.rb`` file that we currently have in the ``lib/controllers`` folder and rename to your desired controller name. It is important that this is a plural version of your model name followed by an '_controller.rb'.
 
-i.e. if you have a ``dog.rb`` contorller you will need a 'dogs_controller.rb'.
+i.e. if you have a ``dog.rb`` controller you will need a `dogs_controller.rb`.
 
-In your create or update methods be sure to structure your if statments around the ``valid?`` method for that is where the actual checks will take place. For example:
+Also be sure to rename the class name to your chosen controller name.
+
+```ruby
+...
+class DogsController < ControllerBase
+...
+```
+
+In your create or update methods be sure to structure your if statments around the ``valid?`` method since that is where the actual checks will take place. For example:
 
 ```ruby
   def create
@@ -153,6 +178,17 @@ At the top of each class ``protect_from_forgery`` has been implimented to protec
 ```
 ### Creating Views ###
 
+Nothing has changed with views in comparision to the original rails. Same plural model name structure for the file and file names matching controller method names.
+
+The ``application.html.erb`` resides in the layout folder in the views.
+
+### Assets ###
+
+Add any css you wish to the application.css file in the ``lib/assets/stylesheets``
+
+### Done ###
+
+That should be enough to get everything up and running!
 
 ---
 Developed by [Alex Mattson](http://www.alexmattson.com)

@@ -1,7 +1,7 @@
 Dir[File.dirname(__FILE__) + "../views/dogs/*.html.erb"].each {|file| require file }
 require_relative '../models/dog'
 
-class DogsController < ControllerBase
+class ModelsController < ControllerBase
   protect_from_forgery
 
   def index
